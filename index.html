@@ -1,1 +1,578 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🎤 Blow the Candle | Voice-Activated Birthday Wish</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
 
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #1e2b3c 0%, #0f1a24 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Pacifico', cursive, sans-serif;
+            padding: 1rem;
+        }
+
+        /* main card */
+        .birthday-card {
+            max-width: 650px;
+            width: 100%;
+            background: rgba(255, 248, 225, 0.95);
+            border-radius: 80px 80px 60px 60px;
+            box-shadow: 0 30px 40px rgba(0, 0, 0, 0.4), inset 0 1px 4px rgba(255, 255, 200, 0.8);
+            overflow: hidden;
+            backdrop-filter: blur(2px);
+            transition: all 0.2s ease;
+            text-align: center;
+            padding: 1.8rem 1.5rem 2.5rem;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.5rem;
+            color: #e65c1e;
+            text-shadow: 3px 3px 0 #ffd966;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .sub {
+            font-size: 1rem;
+            background: #f7e5c2;
+            display: inline-block;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            color: #a5541a;
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+        }
+
+        /* candle zone */
+        .candle-stage {
+            background: #fcf3e0;
+            border-radius: 70px;
+            padding: 1.5rem 1rem;
+            margin: 1rem 0 1.5rem;
+            box-shadow: inset 0 0 0 3px white, 0 12px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .candle-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            transition: all 0.2s;
+        }
+
+        .candle-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .candle-container:hover {
+            transform: scale(1.02);
+        }
+
+        /* candle stick */
+        .candle {
+            width: 70px;
+            height: 150px;
+            background: linear-gradient(135deg, #ffe0b5, #ffc285);
+            border-radius: 35px 35px 20px 20px;
+            box-shadow: 0 10px 0 #b97f3a, inset 0 2px 5px rgba(255,255,200,0.8);
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .wick {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 18px;
+            background: #5e3a1f;
+            border-radius: 3px;
+            z-index: 2;
+        }
+
+        .flame {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 45px;
+            background: radial-gradient(circle, #ff7700, #ffcc33, #ff5500);
+            border-radius: 50% 50% 40% 40%;
+            filter: blur(2px);
+            box-shadow: 0 0 20px #ffaa33, 0 0 40px #ff6600;
+            transition: all 0.2s cubic-bezier(0.2, 1.2, 0.8, 1);
+            animation: flicker 0.12s infinite alternate;
+            z-index: 3;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); opacity: 1; box-shadow: 0 0 15px #ffaa33;}
+            100% { transform: translateX(-50%) scale(1.08, 0.96); opacity: 0.95; box-shadow: 0 0 30px #ff884d;}
+        }
+
+        /* extinguished flame */
+        .flame.extinguished {
+            opacity: 0;
+            transform: translateX(-50%) scale(0);
+            box-shadow: none;
+            transition: all 0.18s ease-out;
+        }
+
+        /* candle melt effect after blow */
+        .candle.extinguished-candle {
+            background: linear-gradient(135deg, #ddb27e, #c69054);
+            box-shadow: 0 6px 0 #9b6436;
+        }
+
+        /* mic area */
+        .mic-area {
+            background: #fff2e0;
+            border-radius: 50px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: inset 0 1px 4px #fff8, 0 5px 12px rgba(0,0,0,0.1);
+        }
+
+        .mic-button {
+            background: #e65c1e;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 5px 0 #923e12;
+        }
+
+        .mic-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #923e12;
+        }
+
+        .mic-status {
+            background: #2e241f;
+            padding: 8px 18px;
+            border-radius: 50px;
+            color: #ffdd99;
+            font-weight: 500;
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+
+        .blow-hint {
+            font-weight: bold;
+            background: #ffecb3;
+            padding: 5px 15px;
+            border-radius: 30px;
+            color: #b45f2b;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* birthday info section */
+        .info-panel {
+            background: #f7e2c0;
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            text-align: left;
+            box-shadow: inset 0 1px 2px white, 0 6px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .dob-row, .age-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            margin: 8px 0;
+            font-weight: 500;
+        }
+
+        .dob-row span:first-child, .age-row span:first-child {
+            color: #9b4e1b;
+        }
+
+        .dob-value, .age-value {
+            font-weight: 800;
+            color: #c2450b;
+            font-size: 1.3rem;
+            background: #fff0da;
+            padding: 0.2rem 0.9rem;
+            border-radius: 50px;
+        }
+
+        .birthday-message {
+            font-size: 1.8rem;
+            font-family: 'Pacifico', cursive;
+            text-align: center;
+            background: linear-gradient(135deg, #f5a65b, #e6461a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-top: 0.6rem;
+            word-break: break-word;
+        }
+
+        .reset-btn {
+            background: #5f4330;
+            border: none;
+            color: #ffeaaf;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin-top: 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.1s;
+        }
+
+        .reset-btn:active {
+            transform: scale(0.96);
+        }
+
+        footer {
+            font-size: 0.7rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 500px) {
+            .birthday-card { padding: 1rem; }
+            .candle { width: 55px; height: 120px; }
+            .flame { width: 22px; height: 38px; top: -26px; }
+            .birthday-message { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="birthday-card" id="app">
+    <h1>🎂 Happy Birthday! 🎉</h1>
+    <div class="sub">✨ Blow the mic to blow the candle ✨</div>
+
+    <div class="candle-stage">
+        <div class="candle-wrapper" id="candleWrapper">
+            <div class="candle-container" id="candleMain">
+                <div class="candle" id="candleStick">
+                    <div class="wick"></div>
+                    <div class="flame" id="flameElement"></div>
+                </div>
+                <div style="margin-top: 12px; font-size: 0.85rem; font-weight: bold;">🕯️ Birthday Candle</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mic-area">
+        <button class="mic-button" id="micBtn">🎤 Enable Microphone & Blow</button>
+        <div class="mic-status" id="micStatus">⚪ Inactive</div>
+        <div class="blow-hint">💨 Shout / Blow air → 🕯️💨</div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <div class="dob-row">
+            <span>📅 Date of Birth:</span>
+            <span class="dob-value" id="dobDisplay">—</span>
+        </div>
+        <div class="age-row">
+            <span>🎂 Age (today):</span>
+            <span class="age-value" id="ageDisplay">—</span>
+        </div>
+        <div class="birthday-message" id="birthdayMsg">✨🎈🎁✨</div>
+    </div>
+
+    <button class="reset-btn" id="resetBtn">🔄 Relight Candle & Reset</button>
+    <footer>💨 blow into mic / speak loudly — the flame goes out! (sensitivity adjusted for blowing)</footer>
+</div>
+
+<script>
+    // ---------- DOM elements ----------
+    const flame = document.getElementById('flameElement');
+    const candleStick = document.getElementById('candleStick');
+    const micBtn = document.getElementById('micBtn');
+    const micStatusSpan = document.getElementById('micStatus');
+    const resetBtn = document.getElementById('resetBtn');
+    const dobDisplaySpan = document.getElementById('dobDisplay');
+    const ageDisplaySpan = document.getElementById('ageDisplay');
+    const birthdayMsgDiv = document.getElementById('birthdayMsg');
+
+    // ---------- Candle state ----------
+    let isCandleLit = true;       // true = flame burning
+    let mediaStream = null;
+    let audioContext = null;
+    let sourceNode = null;
+    let analyserNode = null;
+    let animationFrameId = null;
+    let isMicActive = false;
+
+    // ---------- Birthday configuration (edit here for your own birthday!) ----------
+    // Set the birthday person's date of birth (YYYY, MM-1, DD) -> Month is 0-index in JS
+    const BIRTHDAY_DATE = new Date(1995, 5, 15);  // Example: June 15, 1995  (month 5 = June)
+    // You can change this to any date: new Date(YEAR, MONTH-1, DAY)
+    // For a dynamic demo, we'll also store a display string
+
+    function formatDateToYMD(date) {
+        let year = date.getFullYear();
+        let month = (date.getMonth() + 1).toString().padStart(2, '0');
+        let day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // calculate exact age (years) based on birthday
+    function calculateAge(birthDate) {
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    // update UI with birthday & age & custom message
+    function updateBirthdayInfo() {
+        const dobFormatted = formatDateToYMD(BIRTHDAY_DATE);
+        dobDisplaySpan.textContent = dobFormatted;
+        const age = calculateAge(BIRTHDAY_DATE);
+        ageDisplaySpan.textContent = `${age} years old 🎂`;
+
+        // special birthday message: if today matches birth month & day -> extra wishes
+        const today = new Date();
+        const isActualBirthday = (today.getMonth() === BIRTHDAY_DATE.getMonth() && today.getDate() === BIRTHDAY_DATE.getDate());
+        let msg = "";
+        if (isActualBirthday) {
+            msg = `🎉 HAPPY BIRTHDAY! 🎉 You're ${age} today! 🥳🎂🎈`;
+        } else {
+            msg = `🎈 Celebrating you! Born on ${dobFormatted} · Age ${age} · Cheers! 🎁`;
+        }
+        if (!isCandleLit) {
+            msg = `✨ WISH GRANTED! ✨ ${msg} 🕯️💨✨`;
+        }
+        birthdayMsgDiv.textContent = msg;
+    }
+
+    // ---------- Candle visual effects ----------
+    function extinguishCandle() {
+        if (!isCandleLit) return;
+        isCandleLit = false;
+        // add class to flame to hide + add extinguish effect on candle stick
+        flame.classList.add('extinguished');
+        candleStick.classList.add('extinguished-candle');
+        updateBirthdayInfo(); // update message to show candle blown
+        // optional: play little visual puffs? just ui update
+    }
+
+    function relightCandle() {
+        if (isCandleLit) return;
+        isCandleLit = true;
+        flame.classList.remove('extinguished');
+        candleStick.classList.remove('extinguished-candle');
+        updateBirthdayInfo();
+    }
+
+    // ---------- Audio Analysis for Blow Detection ----------
+    // We detect high-energy broadband noise typical for blowing / shouting.
+    // Thresholds: blow often creates high volume in mid-high frequencies & sharp RMS amplitude.
+    let lastBlowTimestamp = 0;
+    const BLOW_COOLDOWN_MS = 800;   // prevent multiple blows in quick succession
+    const BLOW_ENERGY_THRESHOLD = 0.38;  // normalized RMS threshold (0-1), blow easily reaches >0.4 if shouting/blowing into mic
+
+    function initAudioAndAnalyser() {
+        if (audioContext && audioContext.state !== 'closed') {
+            // already initialized but maybe suspended
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            return;
+        }
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyserNode = audioContext.createAnalyser();
+            analyserNode.fftSize = 256;
+            analyserNode.smoothingTimeConstant = 0.2;
+        } catch (e) {
+            console.warn(e);
+            micStatusSpan.innerText = "❌ WebAudio not supported";
+            return false;
+        }
+        return true;
+    }
+
+    // start mic stream
+    async function enableMicrophone() {
+        if (mediaStream) {
+            // already active, just ensure context is running
+            if (audioContext && audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+            micStatusSpan.innerText = "🎙️ Active · Blow Now!";
+            return true;
+        }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            mediaStream = stream;
+
+            if (!audioContext || audioContext.state === 'closed') {
+                if (!initAudioAndAnalyser()) throw new Error("audio init fail");
+            }
+            await audioContext.resume();
+
+            if (sourceNode) {
+                try { sourceNode.disconnect(); } catch(e) {}
+            }
+            sourceNode = audioContext.createMediaStreamSource(stream);
+            sourceNode.connect(analyserNode);
+            // no need to connect to destination unless you want feedback
+            micStatusSpan.innerText = "🎙️ Active · Blow Now!";
+            isMicActive = true;
+            startBlowDetectionLoop();
+            return true;
+        } catch (err) {
+            console.error("Microphone error:", err);
+            micStatusSpan.innerText = "❌ Mic blocked / error";
+            isMicActive = false;
+            return false;
+        }
+    }
+
+    // stop mic and cleanup
+    function stopMicrophone() {
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+        if (sourceNode) {
+            try { sourceNode.disconnect(); } catch(e) {}
+            sourceNode = null;
+        }
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(track => {
+                track.stop();
+            });
+            mediaStream = null;
+        }
+        if (audioContext) {
+            audioContext.close().catch(e=>console.warn);
+            audioContext = null;
+            analyserNode = null;
+        }
+        isMicActive = false;
+        micStatusSpan.innerText = "⚪ Inactive";
+    }
+
+    // get current RMS volume from microphone (0...1)
+    function getVolumeRMS() {
+        if (!analyserNode) return 0;
+        const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+        analyserNode.getByteTimeDomainData(dataArray);
+        let sumSquares = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+            let v = (dataArray[i] - 128) / 128;
+            sumSquares += v * v;
+        }
+        let rms = Math.sqrt(sumSquares / dataArray.length);
+        // clamp to 0-1 range
+        return Math.min(1.0, rms);
+    }
+
+    // detect blow: RMS high & also short burst detection
+    function detectBlow() {
+        if (!isMicActive || !analyserNode || !isCandleLit) return false;
+        const rms = getVolumeRMS();
+        // blow / shout creates rms > ~0.35 easily. adjust threshold
+        if (rms > BLOW_ENERGY_THRESHOLD) {
+            const now = Date.now();
+            if (now - lastBlowTimestamp > BLOW_COOLDOWN_MS) {
+                lastBlowTimestamp = now;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function startBlowDetectionLoop() {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        function loop() {
+            if (!isMicActive || !analyserNode) {
+                animationFrameId = null;
+                return;
+            }
+            if (isCandleLit) {
+                const blowDetected = detectBlow();
+                if (blowDetected) {
+                    extinguishCandle();
+                    // add haptic feedback tiny indicator
+                    micStatusSpan.style.backgroundColor = "#9b3e12";
+                    micStatusSpan.innerText = "💨 BLOW DETECTED! Candle OUT! 💨";
+                    setTimeout(() => {
+                        if (isMicActive) micStatusSpan.innerText = "🎙️ Active · Blow Now!";
+                        micStatusSpan.style.backgroundColor = "#2e241f";
+                    }, 1000);
+                } else {
+                    // optional live rms indicator? small visual feedback but optional
+                    let rms = getVolumeRMS();
+                    if (rms > 0.2) {
+                        micStatusSpan.innerText = `🎤🔊 Blow harder! (${Math.floor(rms*100)}%)`;
+                    } else if (rms > 0.05) {
+                        micStatusSpan.innerText = `🎙️ Keep blowing...`;
+                    } else {
+                        micStatusSpan.innerText = `🎙️ Active · Blow Now!`;
+                    }
+                }
+            } else {
+                micStatusSpan.innerText = `🕯️ Candle is out! 🎉 Press reset`;
+            }
+            animationFrameId = requestAnimationFrame(loop);
+        }
+        loop();
+    }
+
+    // ---------- UI Event Handlers ----------
+    micBtn.onclick = async () => {
+        if (mediaStream && isMicActive) {
+            // if already active, do nothing but maybe show message
+            micStatusSpan.innerText = "🎤 Already active, start blowing!";
+            setTimeout(() => {
+                if(isMicActive) micStatusSpan.innerText = "🎙️ Active · Blow Now!";
+            }, 1200);
+            return;
+        }
+        // fresh start: stop previous stream if any
+        stopMicrophone();
+        const success = await enableMicrophone();
+        if (!s
